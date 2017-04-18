@@ -18,9 +18,9 @@
 	/* Aliases to allow u-boot to modify the device tree */
 	aliases {
 		fb_rgb = &lcdif;
-		t_rgb = &t_lcd;
+		t_rgb = &t_lcd; //&epdc0;
 		bl_rgb = &backlight_lcd;
-		rgb = &display0;
+		rgb = &display0; //&epdc0;
 		ts_con_rgb = &i2c1;
 	};
 
@@ -122,8 +122,31 @@
                 audio-codec = <&codec>;
                 audio-routing = "LOUT", "ROUT", "LLINEIN", "RLINEIN";
         };
+/* added 
+	spi4 {
+		compatible = "spi-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_spi1>;
+		status = "okay";
+		gpio-sck = <&gpio1 13 0>;
+		gpio-mosi = <&gpio1 9 0>;
+		cs-gpios = <&gpio1 12 0>;
+		num-chipselects = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 
+	/*gpio_spi: gpio_spi@0 {
+			compatible = "fairchild,74hc595";
+			gpio-controller;
+			#gpio-cells = <2>;
+			reg = <0>;
+			registers-number = <1>;
+			registers-default = /bits/ 8 <0x54>; /* Enable PERI_3V3, SENSOR_RST_B and HDMI_RST*/
+		//	spi-max-frequency = <100000>;
+		//};
 
+	//};
+/* */
 };
 
 &adc1 {
@@ -214,7 +237,7 @@
 
 &mipi_csi {
 	clock-frequency = <240000000>;
-	status = "okay";
+	status = "okay";   //////here..
 	port {
 		mipi_sensor_ep: endpoint1 {
 			remote-endpoint = <&ov5647_mipi_ep>;
@@ -552,11 +575,10 @@ tps6518x: tps6518x@68 {
 		dwnseq0 = <0x1e>;
 		dwnseq1 = <0xe0>;
 				
-
 		gpio_pmic_pwrgood = <&gpio2 31 0>;	//<&gpio2 31 0>; //las mismas variables se llaman desde el device driver
 		gpio_pmic_vcom_ctrl = <&gpio7 0 0>; //<&gpio4 14 0>;
 		gpio_pmic_wakeup = <&gpio7 13 0>; // (6*32)+13=205
-		gpio_pmic_intr = <&gpio7 12 0>; 
+		gpio_pmic_intr = <&gpio7 12 0>;   // 204 
 		gpio_pmic_powerup = <&gpio7 14 0>; // (6*32)+14=206
 
 		regulators {
@@ -604,7 +626,7 @@ tps6518x: tps6518x@68 {
 				//MX7D_PAD_EPDC_DATA14__GPIO2_IO14        0x59  /* CAN_STBY */
 			>;
 		};
-
+		/* interrup touch elan BombShellV2 */
 		pinctrl_epdc_elan_touch: epdc_elan_touch_grp {
 			fsl,pins = <
 				MX7D_PAD_ENET1_RGMII_TD1__GPIO7_IO7	0x80000000	
@@ -612,7 +634,7 @@ tps6518x: tps6518x@68 {
 		};
 
 		pinctrl_tps6518x: tps6518xgrp-1 {
-			fsl,pins = <
+			fsl,pins = <		
 				MX7D_PAD_ENET1_RX_CLK__GPIO7_IO13		0x80000000 //MX7D_PAD_ENET1_RX_CLK__EPDC_PWR_WAKE -- MX7D_PAD_EPDC_SDCE3__GPIO2_IO23		0x80000000  /* wakeup */
 				MX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0		0x80000000 //MX7D_PAD_ENET1_RGMII_RD0__EPDC_VCOM0 --MX7D_PAD_I2C4_SCL__GPIO4_IO14		0x80000000  /* vcom_ctrl */ MX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0
 				MX7D_PAD_ENET1_TX_CLK__GPIO7_IO12		0x80000000 //MX7D_PAD_ENET1_TX_CLK__EPDC_PWR_IRQ // MX7D_PAD_EPDC_SDCE2__GPIO2_IO22		0x80000000  /* pwr int */
@@ -624,7 +646,7 @@ tps6518x: tps6518x@68 {
 		pinctrl_rgb_connector: rgb_connector_grp {
 			fsl,pins = <
 				MX7D_PAD_SD2_CD_B__GPIO5_IO9          0x1f0b0
-				MX7D_PAD_EPDC_GDSP__GPIO2_IO27        0x1f0b0
+				//MX7D_PAD_EPDC_GDSP__GPIO2_IO27        0x1f0b0
  			>;
 		};
 
@@ -644,34 +666,34 @@ tps6518x: tps6518x@68 {
 
                 pinctrl_epdc0: epdcgrp0 {
                         fsl,pins = <
-				MX7D_PAD_EPDC_DATA00__EPDC_DATA0  0x2
-				MX7D_PAD_EPDC_DATA01__EPDC_DATA1  0x2
-				MX7D_PAD_EPDC_DATA02__EPDC_DATA2  0x2
-				MX7D_PAD_EPDC_DATA03__EPDC_DATA3  0x2
-				MX7D_PAD_EPDC_DATA04__EPDC_DATA4  0x2
-				MX7D_PAD_EPDC_DATA05__EPDC_DATA5  0x2
-				MX7D_PAD_EPDC_DATA06__EPDC_DATA6  0x2
-				MX7D_PAD_EPDC_DATA07__EPDC_DATA7  0x2
-				MX7D_PAD_EPDC_DATA08__EPDC_DATA8  0x2
-				MX7D_PAD_EPDC_DATA09__EPDC_DATA9  0x2
-				MX7D_PAD_EPDC_DATA10__EPDC_DATA10 0x2
-				MX7D_PAD_EPDC_DATA11__EPDC_DATA11 0x2
-				MX7D_PAD_EPDC_DATA12__EPDC_DATA12 0x2
-				MX7D_PAD_EPDC_DATA13__EPDC_DATA13 0x2
-				MX7D_PAD_EPDC_DATA14__EPDC_DATA14 0x2
-				MX7D_PAD_EPDC_DATA15__EPDC_DATA15 0x2
-				MX7D_PAD_EPDC_SDCLK__EPDC_SDCLK   0x2
-				MX7D_PAD_EPDC_SDLE__EPDC_SDLE     0x2
-				MX7D_PAD_EPDC_SDOE__EPDC_SDOE     0x2
-				MX7D_PAD_EPDC_SDSHR__EPDC_SDSHR   0x2
-				MX7D_PAD_EPDC_SDCE0__EPDC_SDCE0   0x2
-				MX7D_PAD_EPDC_SDCE1__EPDC_SDCE1   0x2
-				MX7D_PAD_EPDC_GDCLK__EPDC_GDCLK   0x2
-				MX7D_PAD_EPDC_GDOE__EPDC_GDOE     0x2
-				MX7D_PAD_EPDC_GDRL__EPDC_GDRL     0x2
-				MX7D_PAD_EPDC_GDSP__EPDC_GDSP     0x2
-				MX7D_PAD_EPDC_BDR0__EPDC_BDR0     0x2
-				MX7D_PAD_EPDC_BDR1__EPDC_BDR1     0x2
+				MX7D_PAD_EPDC_DATA00__EPDC_DATA0  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA01__EPDC_DATA1  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA02__EPDC_DATA2  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA03__EPDC_DATA3  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA04__EPDC_DATA4  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA05__EPDC_DATA5  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA06__EPDC_DATA6  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA07__EPDC_DATA7  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA08__EPDC_DATA8  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA09__EPDC_DATA9  0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA10__EPDC_DATA10 0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA11__EPDC_DATA11 0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA12__EPDC_DATA12 0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA13__EPDC_DATA13 0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA14__EPDC_DATA14 0x2 //0x80000000
+				MX7D_PAD_EPDC_DATA15__EPDC_DATA15 0x2 //0x80000000
+				MX7D_PAD_EPDC_SDCLK__EPDC_SDCLK   0x2 //0x80000000
+				MX7D_PAD_EPDC_SDLE__EPDC_SDLE     0x2 //0x80000000
+				MX7D_PAD_EPDC_SDOE__EPDC_SDOE     0x2 //0x80000000
+				MX7D_PAD_EPDC_SDSHR__EPDC_SDSHR   0x2 //0x80000000
+				MX7D_PAD_EPDC_SDCE0__EPDC_SDCE0   0x2 //0x80000000
+				MX7D_PAD_EPDC_SDCE1__EPDC_SDCE1   0x2 //0x80000000
+				MX7D_PAD_EPDC_GDCLK__EPDC_GDCLK   0x2 //0x80000000
+				MX7D_PAD_EPDC_GDOE__EPDC_GDOE     0x2 //0x80000000
+				MX7D_PAD_EPDC_GDRL__EPDC_GDRL     0x2 //0x80000000
+				MX7D_PAD_EPDC_GDSP__EPDC_GDSP     0x2 //0x80000000
+				MX7D_PAD_EPDC_BDR0__EPDC_BDR0     0x2 //0x80000000
+				MX7D_PAD_EPDC_BDR1__EPDC_BDR1     0x2 //0x80000000
                         >;
                 };
 
@@ -788,8 +810,8 @@ tps6518x: tps6518x@68 {
 				MX7D_PAD_LCD_VSYNC__LCD_VSYNC	0x79
 				MX7D_PAD_LCD_HSYNC__LCD_HSYNC	0x79
 				MX7D_PAD_LCD_RESET__LCD_RESET	0x79
-				MX7D_PAD_EPDC_GDCLK__GPIO2_IO24 0x79
-				MX7D_PAD_EPDC_GDOE__GPIO2_IO25  0x79
+				//MX7D_PAD_EPDC_GDCLK__GPIO2_IO24 0x79
+				//MX7D_PAD_EPDC_GDOE__GPIO2_IO25  0x79
 			>;
 		};
 
@@ -935,7 +957,7 @@ tps6518x: tps6518x@68 {
 
                 pinctrl_sai1: sai1grp {
                         fsl,pins = <
-                                MX7D_PAD_SAI1_MCLK__SAI1_MCLK           0x1f
+                MX7D_PAD_SAI1_MCLK__SAI1_MCLK           0x1f
 				MX7D_PAD_SAI1_TX_BCLK__SAI1_TX_BCLK     0x1f
 				MX7D_PAD_SAI1_TX_SYNC__SAI1_TX_SYNC     0x1f
 				MX7D_PAD_SAI1_TX_DATA__SAI1_TX_DATA0    0x30
@@ -954,12 +976,12 @@ tps6518x: tps6518x@68 {
 
 		pinctrl_qspi1_1: qspi1grp_1 {
 			fsl,pins = <
-				MX7D_PAD_EPDC_DATA00__QSPI_A_DATA0 0x51
-				MX7D_PAD_EPDC_DATA01__QSPI_A_DATA1 0x51
-				MX7D_PAD_EPDC_DATA02__QSPI_A_DATA2 0x51
-				MX7D_PAD_EPDC_DATA03__QSPI_A_DATA3 0x51
-				MX7D_PAD_EPDC_DATA05__QSPI_A_SCLK 0x51
-				MX7D_PAD_EPDC_DATA06__QSPI_A_SS0_B 0x51
+			//	MX7D_PAD_EPDC_DATA00__QSPI_A_DATA0 0x51
+			//	MX7D_PAD_EPDC_DATA01__QSPI_A_DATA1 0x51
+			//	MX7D_PAD_EPDC_DATA02__QSPI_A_DATA2 0x51
+			//	MX7D_PAD_EPDC_DATA03__QSPI_A_DATA3 0x51
+			//	MX7D_PAD_EPDC_DATA05__QSPI_A_SCLK 0x51
+			//	MX7D_PAD_EPDC_DATA06__QSPI_A_SS0_B 0x51
 			>;
 		};
 
@@ -998,7 +1020,7 @@ tps6518x: tps6518x@68 {
 	pinctrl-0 = <&pinctrl_lcdif_dat
 		     &pinctrl_lcdif_ctrl>;
 	pinctrl-assert-gpios = <&gpio2 25 GPIO_ACTIVE_HIGH>;
-	display = <&display0>;
+	display = <&display0>; //<&epdc0>;
 	status = "okay";
 
 	display0: display {
@@ -1028,6 +1050,17 @@ tps6518x: tps6518x@68 {
                 };
 
 	};
+/*
+	epdc0: epdc {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_epdc0>;
+        V3P3-supply = <&V3P3_reg>;
+        VCOM-supply = <&VCOM_reg>;
+        DISPLAY-supply = <&DISPLAY_reg>;
+		//en-gpios = <&gpio_spi 5 0>;
+        status = "okay";//"disabled";
+	};
+*/
 };
 
 &pcie {
@@ -1040,13 +1073,13 @@ tps6518x: tps6518x@68 {
 &pwm1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_pwm1>;
-	status = "okay";
+	status = "disabled";//"okay";
 };
 
 &pwm3 {
         pinctrl-names = "default";
         pinctrl-0 = <&pinctrl_pwm3>;
-        status = "okay";
+        status = "disabled";//"okay";
 };
 
 
@@ -1058,7 +1091,7 @@ tps6518x: tps6518x@68 {
 			  <&clks IMX7D_SAI1_ROOT_CLK>;
 	assigned-clock-parents = <&clks IMX7D_PLL_AUDIO_POST_DIV>;
 	assigned-clock-rates = <0>, <11289600>;
-	status = "okay";
+	status = "disabled";//"okay";
 };
 
 
@@ -1145,7 +1178,7 @@ tps6518x: tps6518x@68 {
 &qspi1 {
         pinctrl-names = "default";
         pinctrl-0 = <&pinctrl_qspi1_1>;
-        status = "okay";
+        status = "disable";//"okay";
         ddrsmp=<0>;
 
         flash0: n25q256a@0 {

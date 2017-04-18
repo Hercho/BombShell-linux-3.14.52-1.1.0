@@ -51,7 +51,7 @@
 #include <linux/mfd/syscon.h>
 #include <linux/regmap.h>
 #include <linux/regulator/driver.h>
-#include <linux/mfd/max17135.h>
+#include <linux/mfd/tps6518x.h>				
 #include <linux/fsl_devices.h>
 #include <linux/bitops.h>
 #include <linux/pinctrl/consumer.h>
@@ -812,7 +812,8 @@ static inline void epdc_set_temp(u32 temp)
 	unsigned int ext_temp, ext_temp_index = temp;
 
 	if (temp == DEFAULT_TEMP_INDEX) {
-		ret = max17135_reg_read(REG_MAX17135_EXT_TEMP, &ext_temp);
+		//ret = max17135_reg_read(REG_MAX17135_EXT_TEMP, &ext_temp);
+		ret = tps6518x_reg_read(REG_TPS6518x_TMST_VAL, &ext_temp);
 		if (ret == 0) {
 			ext_temp = ext_temp >> 8;
 			dev_dbg(g_fb_data->dev, "the current external temperature is %d\n",
