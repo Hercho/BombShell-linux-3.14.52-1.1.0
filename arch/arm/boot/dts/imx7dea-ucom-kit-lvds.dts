@@ -71,7 +71,13 @@
         vsync-len = <10>;
 };
 */
+&qspi1 {
+		status = "disabled";
 
+	flash0 {
+		status = "disabled";
+	};
+};
 
 &epdc {
         status = "okay";

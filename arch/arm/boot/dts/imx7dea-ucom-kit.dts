@@ -16,14 +16,14 @@
 	compatible = "fsl,imx7dea-ucom", "fsl,imx7d";
 
 	/* Aliases to allow u-boot to modify the device tree */
-/*	aliases {
-		fb_rgb = &lcdif;
-		t_rgb = &t_lcd; //&epdc0;
-		bl_rgb = &backlight_lcd;
-		rgb = &epdc;//&display0; //&epdc0;
+	aliases {
+		//fb_rgb = &epdc;//&lcdif;
+		//t_rgb = &t_lcd; //&epdc0;
+		//bl_rgb = &backlight_lcd;
+		//rgb = &epdc;//&display0; //&epdc0;
 		ts_con_rgb = &i2c1;
 	};
-*/
+
  	memory {
 		reg = <0x80000000 0x80000000>;
 	};
@@ -112,7 +112,7 @@
 			enable-active-high;
 		};
 	};
-
+/*
         sound {
                 compatible = "fsl,imx-audio-wm8731";
                 model = "wm8731-audio";
@@ -521,7 +521,7 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c2>;
 	status = "okay";
-	/* elan-touch ektf2232 */  
+	/* elan-touch ektf2232-driver */  
 /*	elan@15 { 
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_epdc_elan_touch>;
@@ -545,7 +545,7 @@
 		gpio_elan_cs = <&gpio1 2 0>;	//<&gpio2 9 0>;  //GPIO1_IO02 -> CE   <&gpio1 2 0>;
 		gpio_elan_rst = <&gpio1 3 0>; 	//<&gpio4 4 0>; //GPIO1_IO03 -> RESET <&gpio1 3 0>; 
 		gpio_intr = <&gpio7 7 0>;	  //ENET1_TD1  -> (INTERRUP MX7D_PAD_ENET1_RGMII_TD1__GPIO7_IO7)
-		status = "okay"; //ENABLE_TOUCH -> GPIO1_IO04 (mosfet) (jumper permanente)
+		status = "okay"; 	//ENABLE_TOUCH -> GPIO1_IO04 (mosfet) (jumper permanente)
 	};
 };
 
@@ -670,7 +670,7 @@
 		pinctrl_tps6518x: tps6518xgrp-1 {
 			fsl,pins = <		
 				MX7D_PAD_ENET1_RX_CLK__GPIO7_IO13		0x80000000 //MX7D_PAD_ENET1_RX_CLK__EPDC_PWR_WAKE -- MX7D_PAD_EPDC_SDCE3__GPIO2_IO23		0x80000000  /* wakeup */
-				MX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0		0x80000000 //MX7D_PAD_ENET1_RGMII_RD0__EPDC_VCOM0 --MX7D_PAD_I2C4_SCL__GPIO4_IO14		0x80000000  /* vcom_ctrl */ MX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0
+				MX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0		0x80000000 //MX7D_PAD_ENET1_RGMII_RD0__EPDC_VCOM0 --MX7D_PAD_I2C4_SCL__GPIO4_IO14		0x80000000  /* vcom_ctrl */
 				MX7D_PAD_ENET1_TX_CLK__GPIO7_IO12		0x80000000 //MX7D_PAD_ENET1_TX_CLK__EPDC_PWR_IRQ // MX7D_PAD_EPDC_SDCE2__GPIO2_IO22		0x80000000  /* pwr int */
 				MX7D_PAD_EPDC_PWR_STAT__GPIO2_IO31		0x80000000  ///* pwrgood */  Ok Idem 
 				MX7D_PAD_ENET1_CRS__GPIO7_IO14			0x80000000 //MX7D_PAD_ENET1_CRS__EPDC_PWR_CTRL0		//MX7D_PAD_EPDC_PWR_COM__GPIO2_IO30	0x80000000  /* pwr-up-v3p3 */
@@ -1176,11 +1176,11 @@
 	non-removable;
 	status = "okay";
 };
-/*
+
 &qspi1 {
         pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_qspi1_1>;
-        status = "disable";//"okay";
+        //pinctrl-0 = <&pinctrl_qspi1_1>;
+        status = "disable";  //"okay";
         ddrsmp=<0>;
 
         flash0: n25q256a@0 {
@@ -1189,11 +1189,12 @@
                 compatible = "micron,n25q256a";
                 spi-max-frequency = <29000000>;
                 /* take off one dummy cycle */
-/*                spi-nor,ddr-quad-read-dummy = <6>;
+                spi-nor,ddr-quad-read-dummy = <6>;
                 reg = <0>;
+				status = "disabled";
         };
 
 };
-*/
+
 
 
