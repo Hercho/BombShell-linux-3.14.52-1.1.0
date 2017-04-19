@@ -21,7 +21,7 @@
 
 
 &i2c1 {
-    ar1021_rgb {
+/*    ar1021_rgb {
 	pinctrl-0 = <&pinctrl_lvds0>;
 	interrupt-parent = <&gpio2>;
 	interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
@@ -56,8 +56,9 @@
 	interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
 	status = "disabled";
     };
+*/
 };
-
+/*
 &t_lcd {
         clock-frequency = <65000000>;
         hactive = <1024>;
@@ -68,6 +69,33 @@
         vfront-porch = <7>;
         hsync-len = <60>;
         vsync-len = <10>;
+};
+*/
+
+
+&epdc {
+        status = "okay";
+};
+
+&fec1 {
+	status = "disabled";
+};
+
+&fec2 {
+	status = "disabled";
+};
+
+
+&flexcan1 {
+	status = "disabled";
+};
+
+&flexcan2 {
+	status = "disabled";
+};
+
+&tps6518x {
+        status = "okay";
 };
 
 &backlight_lcd {

@@ -16,14 +16,14 @@
 	compatible = "fsl,imx7dea-ucom", "fsl,imx7d";
 
 	/* Aliases to allow u-boot to modify the device tree */
-	aliases {
+/*	aliases {
 		fb_rgb = &lcdif;
 		t_rgb = &t_lcd; //&epdc0;
 		bl_rgb = &backlight_lcd;
-		rgb = &display0; //&epdc0;
+		rgb = &epdc;//&display0; //&epdc0;
 		ts_con_rgb = &i2c1;
 	};
-
+*/
  	memory {
 		reg = <0x80000000 0x80000000>;
 	};
@@ -455,7 +455,7 @@
         };
 
         /* AR1021 touch controller through RGB display interface connector on Carrier Board */
-        ar1021_rgb {
+/*        ar1021_rgb {
                 compatible = "microchip,ar1021-i2c";
                 reg = <0x4d>;
                 pinctrl-names = "default";
@@ -468,7 +468,7 @@
         };
 
         /* eGalax touch controller through RGB display interface connector on Carrier Board */
-        egalax_ts_rgb {
+/*        egalax_ts_rgb {
                 compatible = "eeti,egalax_ts";
                 reg = <0x04>;
                 pinctrl-names = "default";
@@ -480,7 +480,7 @@
         };
 
         /* FocalTech touch controller through RGB display interface connector on Carrier Board */
-        edt-ft5x06_rgb {
+/*        edt-ft5x06_rgb {
                 compatible = "edt,edt-ft5x06";
                 reg = <0x38>;
                 pinctrl-names = "default";
@@ -492,7 +492,7 @@
         };
 
         /* Ilitek touch controller through RGB display interface connector on Carrier Board */
-        ilitek_aim_rgb {
+ /*       ilitek_aim_rgb {
                 compatible = "ilitek,ilitek_aim";
                 reg = <0x41>;
                 pinctrl-names = "default";
@@ -504,7 +504,7 @@
         };
 
         /* Sitronix touch controller through RGB display interface connector on Carrier Board */
-        sitronix_rgb {
+ /*       sitronix_rgb {
                 compatible = "sitronix,sitronix_i2c";
                 reg = <0x55>;
                 pinctrl-names = "default";
@@ -513,7 +513,7 @@
                 interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
                 reset-gpios = <&gpio2 27 GPIO_ACTIVE_HIGH>;
                 status = "disabled";
-        };
+        };  */
 };
 
 &i2c2 {
@@ -555,7 +555,7 @@
 	pinctrl-0 = <&pinctrl_i2c3>;
 	status = "okay";
 
-tps6518x: tps6518x@68 {
+	tps6518x: tps6518x@68 {
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_tps6518x>;
 		compatible = "ti,tps6518x";
@@ -626,6 +626,40 @@ tps6518x: tps6518x@68 {
 				//MX7D_PAD_EPDC_DATA14__GPIO2_IO14        0x59  /* CAN_STBY */
 			>;
 		};
+
+                pinctrl_epdc0: epdcgrp0 {
+                        fsl,pins = <
+				MX7D_PAD_EPDC_DATA00__EPDC_DATA0  0x80000000 	//0x2 
+				MX7D_PAD_EPDC_DATA01__EPDC_DATA1  0x80000000
+				MX7D_PAD_EPDC_DATA02__EPDC_DATA2  0x80000000
+				MX7D_PAD_EPDC_DATA03__EPDC_DATA3  0x80000000
+				MX7D_PAD_EPDC_DATA04__EPDC_DATA4  0x80000000
+				MX7D_PAD_EPDC_DATA05__EPDC_DATA5  0x80000000
+				MX7D_PAD_EPDC_DATA06__EPDC_DATA6  0x80000000
+				MX7D_PAD_EPDC_DATA07__EPDC_DATA7  0x80000000
+				MX7D_PAD_EPDC_DATA08__EPDC_DATA8  0x80000000
+				MX7D_PAD_EPDC_DATA09__EPDC_DATA9  0x80000000
+				MX7D_PAD_EPDC_DATA10__EPDC_DATA10 0x80000000
+				MX7D_PAD_EPDC_DATA11__EPDC_DATA11 0x80000000
+				MX7D_PAD_EPDC_DATA12__EPDC_DATA12 0x80000000
+				MX7D_PAD_EPDC_DATA13__EPDC_DATA13 0x80000000
+				MX7D_PAD_EPDC_DATA14__EPDC_DATA14 0x80000000
+				MX7D_PAD_EPDC_DATA15__EPDC_DATA15 0x80000000
+				MX7D_PAD_EPDC_SDCLK__EPDC_SDCLK   0x80000000
+				MX7D_PAD_EPDC_SDLE__EPDC_SDLE     0x80000000
+				MX7D_PAD_EPDC_SDOE__EPDC_SDOE     0x80000000
+				MX7D_PAD_EPDC_SDSHR__EPDC_SDSHR   0x80000000
+				MX7D_PAD_EPDC_SDCE0__EPDC_SDCE0   0x80000000
+				MX7D_PAD_EPDC_SDCE1__EPDC_SDCE1   0x80000000
+				MX7D_PAD_EPDC_GDCLK__EPDC_GDCLK   0x80000000
+				MX7D_PAD_EPDC_GDOE__EPDC_GDOE     0x80000000
+				MX7D_PAD_EPDC_GDRL__EPDC_GDRL     0x80000000
+				MX7D_PAD_EPDC_GDSP__EPDC_GDSP     0x80000000
+				MX7D_PAD_EPDC_BDR0__EPDC_BDR0     0x80000000
+				MX7D_PAD_EPDC_BDR1__EPDC_BDR1     0x80000000
+                        >;
+                };
+
 		/* interrup touch elan BombShellV2 */
 		pinctrl_epdc_elan_touch: epdc_elan_touch_grp {
 			fsl,pins = <
@@ -642,7 +676,7 @@ tps6518x: tps6518x@68 {
 				MX7D_PAD_ENET1_CRS__GPIO7_IO14			0x80000000 //MX7D_PAD_ENET1_CRS__EPDC_PWR_CTRL0		//MX7D_PAD_EPDC_PWR_COM__GPIO2_IO30	0x80000000  /* pwr-up-v3p3 */
 			>;
 		};
-
+/*
 		pinctrl_rgb_connector: rgb_connector_grp {
 			fsl,pins = <
 				MX7D_PAD_SD2_CD_B__GPIO5_IO9          0x1f0b0
@@ -656,7 +690,7 @@ tps6518x: tps6518x@68 {
                         >;
                 };
 
-
+*/
 		pinctrl_ov5647: ov5647grp-1 {
 			fsl,pins = <
 				MX7D_PAD_I2C4_SCL__GPIO4_IO14           0x39
@@ -664,39 +698,7 @@ tps6518x: tps6518x@68 {
 			>;
 		};
 
-                pinctrl_epdc0: epdcgrp0 {
-                        fsl,pins = <
-				MX7D_PAD_EPDC_DATA00__EPDC_DATA0  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA01__EPDC_DATA1  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA02__EPDC_DATA2  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA03__EPDC_DATA3  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA04__EPDC_DATA4  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA05__EPDC_DATA5  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA06__EPDC_DATA6  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA07__EPDC_DATA7  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA08__EPDC_DATA8  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA09__EPDC_DATA9  0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA10__EPDC_DATA10 0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA11__EPDC_DATA11 0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA12__EPDC_DATA12 0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA13__EPDC_DATA13 0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA14__EPDC_DATA14 0x2 //0x80000000
-				MX7D_PAD_EPDC_DATA15__EPDC_DATA15 0x2 //0x80000000
-				MX7D_PAD_EPDC_SDCLK__EPDC_SDCLK   0x2 //0x80000000
-				MX7D_PAD_EPDC_SDLE__EPDC_SDLE     0x2 //0x80000000
-				MX7D_PAD_EPDC_SDOE__EPDC_SDOE     0x2 //0x80000000
-				MX7D_PAD_EPDC_SDSHR__EPDC_SDSHR   0x2 //0x80000000
-				MX7D_PAD_EPDC_SDCE0__EPDC_SDCE0   0x2 //0x80000000
-				MX7D_PAD_EPDC_SDCE1__EPDC_SDCE1   0x2 //0x80000000
-				MX7D_PAD_EPDC_GDCLK__EPDC_GDCLK   0x2 //0x80000000
-				MX7D_PAD_EPDC_GDOE__EPDC_GDOE     0x2 //0x80000000
-				MX7D_PAD_EPDC_GDRL__EPDC_GDRL     0x2 //0x80000000
-				MX7D_PAD_EPDC_GDSP__EPDC_GDSP     0x2 //0x80000000
-				MX7D_PAD_EPDC_BDR0__EPDC_BDR0     0x2 //0x80000000
-				MX7D_PAD_EPDC_BDR1__EPDC_BDR1     0x2 //0x80000000
-                        >;
-                };
-
+/*
 		pinctrl_enet1: enet1grp {
 			fsl,pins = <
 				/*MX7D_PAD_GPIO1_IO10__ENET1_MDIO		0x3
@@ -715,9 +717,9 @@ tps6518x: tps6518x@68 {
 				MX7D_PAD_ENET1_RGMII_RX_CTL__ENET1_RGMII_RX_CTL	0x1
 				MX7D_PAD_ENET1_COL__GPIO7_IO15                  0x1
 				MX7D_PAD_ENET1_RX_CLK__GPIO7_IO13               0x1
-		*/	>;
+			>;
 		};
-
+*/
 		pinctrl_ecspi3_cs: ecspi3_cs_grp {
 			fsl,pins = <
 				MX7D_PAD_SD2_CD_B__GPIO5_IO9	0x80000000
@@ -773,7 +775,7 @@ tps6518x: tps6518x@68 {
 				MX7D_PAD_SAI1_RX_SYNC__I2C4_SCL		0x4000007f
 			>;
 		};
-
+/*
 		pinctrl_lcdif_dat: lcdifdatgrp {
 			fsl,pins = <
 				MX7D_PAD_LCD_DATA00__LCD_DATA0	0x79
@@ -802,7 +804,7 @@ tps6518x: tps6518x@68 {
 				MX7D_PAD_LCD_DATA23__LCD_DATA23	0x79
 			>;
 		};
-
+/*
 		pinctrl_lcdif_ctrl: lcdifctrlgrp {
 			fsl,pins = <
 				MX7D_PAD_LCD_CLK__LCD_CLK	0x79
@@ -814,7 +816,7 @@ tps6518x: tps6518x@68 {
 				//MX7D_PAD_EPDC_GDOE__GPIO2_IO25  0x79
 			>;
 		};
-
+*/
 		pinctrl_uart1: uart1grp {
 			fsl,pins = <
 				MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX 0x56
@@ -973,7 +975,7 @@ tps6518x: tps6518x@68 {
 				MX7D_PAD_GPIO1_IO13__GPIO1_IO13	0x59
 			>;
 		};
-
+/*
 		pinctrl_qspi1_1: qspi1grp_1 {
 			fsl,pins = <
 			//	MX7D_PAD_EPDC_DATA00__QSPI_A_DATA0 0x51
@@ -984,7 +986,7 @@ tps6518x: tps6518x@68 {
 			//	MX7D_PAD_EPDC_DATA06__QSPI_A_SS0_B 0x51
 			>;
 		};
-
+*/
 	};
 };
 
@@ -1014,11 +1016,11 @@ tps6518x: tps6518x@68 {
 
 	};
 };
-
+/*
 &lcdif {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_lcdif_dat
-		     &pinctrl_lcdif_ctrl>;
+	//pinctrl-0 = <&pinctrl_lcdif_dat
+//		     &pinctrl_lcdif_ctrl>;
 	pinctrl-assert-gpios = <&gpio2 25 GPIO_ACTIVE_HIGH>;
 	display = <&display0>; //<&epdc0>;
 	status = "okay";
@@ -1031,7 +1033,7 @@ tps6518x: tps6518x@68 {
                         native-mode = <&t_lcd>;
                         t_lcd: t_lcd_default {
                                 /* values may be changed in bootscript */
-                                clock-frequency = <33500000>;
+ /*                               clock-frequency = <33500000>;
                                 hactive = <800>;
                                 vactive = <480>;
                                 hback-porch = <89>;
@@ -1061,7 +1063,7 @@ tps6518x: tps6518x@68 {
         status = "okay";//"disabled";
 	};
 */
-};
+//};
 
 &pcie {
 	pinctrl-names = "default";
@@ -1174,7 +1176,7 @@ tps6518x: tps6518x@68 {
 	non-removable;
 	status = "okay";
 };
-
+/*
 &qspi1 {
         pinctrl-names = "default";
         pinctrl-0 = <&pinctrl_qspi1_1>;
@@ -1187,10 +1189,11 @@ tps6518x: tps6518x@68 {
                 compatible = "micron,n25q256a";
                 spi-max-frequency = <29000000>;
                 /* take off one dummy cycle */
-                spi-nor,ddr-quad-read-dummy = <6>;
+/*                spi-nor,ddr-quad-read-dummy = <6>;
                 reg = <0>;
         };
-};
 
+};
+*/
 
 
