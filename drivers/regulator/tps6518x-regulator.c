@@ -338,31 +338,42 @@ static int tps6518x_display_enable(struct regulator_dev *reg)
 	unsigned int fld_mask;	  /* register mask for bitfield to modify */
 	unsigned int fld_val;	  /* new bitfield value to write */
 	unsigned int new_reg_val; /* new register value to write */
-	if (tps6518x->revID == 65182)
+	if (tps6518x->revID == 65182) // solo activa power_up... and wake_up?
 	{
 		epdc_pwr0_enable(reg);
+		printk("PASO POR EPDC_PWR_ENABLE");	
 	}
 	else
 	{
-		gpio_set_value(tps6518x->gpio_pmic_wakeup,1);
+		printk("ENTRO EN ELSE.... ");
+		gpio_set_value(tps6518x->gpio_pmic_wakeup,1); //ver secuencia powerUp, wakUp (orden encendido)
 
 		/* enable display regulators */
 		cur_reg_val = tps65180_current_Enable_Register & 0x3f;
 		fld_mask = BITFMASK(VDDH_EN) | BITFMASK(VPOS_EN) |
-			BITFMASK(VEE_EN) | BITFMASK(VNEG_EN);
+			BITFMASK(VEE_EN) | BITFMASK(VNEG_EN) | BITFMASK(VCOM_EN) | BITFMASK(V3P3_SW_EN); 	// add VCOM_EN,V3P3_EN mask
 		fld_val = BITFVAL(VDDH_EN, true) | BITFVAL(VPOS_EN, true) |
-			BITFVAL(VEE_EN, true) | BITFVAL(VNEG_EN, true) | BITFVAL(VCOM_EN, true);
+			BITFVAL(VEE_EN, true) | BITFVAL(VNEG_EN, true) | BITFVAL(VCOM_EN, true) | BITFVAL(V3P3_SW_EN, true);	// add V3P3_EN, set 1 
 		new_reg_val = tps65180_current_Enable_Register = to_reg_val(cur_reg_val, fld_mask, fld_val);
-		tps6518x_reg_write(REG_TPS65180_ENABLE, new_reg_val);
+		tps6518x_reg_write(REG_TPS65180_ENABLE, new_reg_val); 	// baja 00111111
+
+
+	/*TODO - FALTABA mascara VCOM_EN linea 353, levanto GPIO PWR_UP linea 373, ver opcion de programar todo el registro de una, 
+	ver si al prender el display no pisa la primer escritura de enable y deshabilita los reguladores...  
+	
+	The integrated power switch is used to cut the 3.3-V supply to the EPD panel and is controlled through the
+	V3P3_EN pin of the ENABLE register. In SLEEP mode the switch is automatically turned off and its output is
+	discharged to ground. The default power-up state is OFF. To turn the switch ON, set the V3P3_ENbit to 1.*/
+
 
 		/* turn on display regulators */
-		cur_reg_val = tps65180_current_Enable_Register & 0x3f;
-		fld_mask = BITFMASK(ACTIVE);
-		fld_val = BITFVAL(ACTIVE, true);
-		new_reg_val = tps65180_current_Enable_Register = to_reg_val(cur_reg_val, fld_mask, fld_val);
-		tps6518x_reg_write(REG_TPS65180_ENABLE, new_reg_val);
-	}
-
+		cur_reg_val = tps65180_current_Enable_Register & 0xbf; 	// and logica contra 00111111=0x3f cambio 10111111=0xbf
+		fld_mask = BITFMASK(ACTIVE);		// | BITFMASK(STANDBY); // add standby mask, no needed
+		fld_val = BITFVAL(ACTIVE, true);	// | BITFVAL(STANDBY, true); // add standby bit, no needed
+		new_reg_val = tps65180_current_Enable_Register = to_reg_val(cur_reg_val, fld_mask, fld_val); 
+		tps6518x_reg_write(REG_TPS65180_ENABLE, new_reg_val); 	// set AcTIVE and STANBY to "1"-baja 10000000? podria escribir 0b10011111 de una... 
+	}																			// 0b10111111 0xdf
+	gpio_set_value(tps6518x->gpio_pmic_powerup,1); 	//wake-up hight ACTVE bit==1 || power_up hight pass to active mode Rail=on I2C=on
 	return tps6518x_wait_power_good(tps6518x);
 }
 
