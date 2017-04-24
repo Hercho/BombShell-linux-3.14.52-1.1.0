@@ -70,9 +70,10 @@ int tps6518x_reg_read(int reg_num, unsigned int *reg_val)
 	if (result < 0) {
 		dev_err(&tps6518x_client->dev,
 			"Unable to read tps6518x register via I2C\n");
+		printk(" Error read, Address=%u  registro=%u\n",&tps6518x_client->addr,reg_num);
 		return PMIC_ERROR;
 	}
-
+	
 	*reg_val = result;
 	return PMIC_SUCCESS;
 }
@@ -86,11 +87,14 @@ int tps6518x_reg_write(int reg_num, const unsigned int reg_val)
 
 	result = i2c_smbus_write_byte_data(tps6518x_client, reg_num, reg_val);
 	if (result < 0) {
-	//	dev_err(&tps6518x_client->dev,
-	//		"Unable to write TPS6518x register via I2C\n");
+		dev_err(&tps6518x_client->dev,
+			"Unable to write TPS6518x register via I2C\n");
+		printk("tps6518x_ ERROR Write - tps6518x_reg_write in tps6518x-core, Address= %u  reg= %u valor= %u\n",
+		&tps6518x_client->addr,reg_num, reg_val);
 		return PMIC_ERROR;
 	}
-
+	printk("tps6518x_ OK Write - tps6518x_reg_write in tps6518x-core, Address= %u  reg= %u valor= %u\n",
+		&tps6518x_client->addr,reg_num, reg_val);
 	return PMIC_SUCCESS;
 }
 

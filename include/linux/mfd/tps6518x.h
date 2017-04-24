@@ -122,17 +122,17 @@ enum {
 /* VCOM_ADJUST */
 #define VCOM_SET_LSH    0
 #define VCOM_SET_WID    8
-#define VCOM1_SET_LSH    0
-#define VCOM1_SET_WID    8
-#define VCOM2_SET_LSH    0
-#define VCOM2_SET_WID    1
-#define VCOM_ACQ_LSH	15
+#define VCOM1_SET_LSH   0
+#define VCOM1_SET_WID   8
+#define VCOM2_SET_LSH   0
+#define VCOM2_SET_WID   1 //8
+#define VCOM_ACQ_LSH	15 //7
 #define VCOM_ACQ_WID	1
-#define VCOM_PROG_LSH	14
+#define VCOM_PROG_LSH	14 //6
 #define VCOM_PEOG_WID	1
-#define VCOM_HiZ_LSH	13
+#define VCOM_HiZ_LSH	13 //5
 #define VCOM_HiZ_WID	1
-#define VCOM_AVG_LSH	11
+#define VCOM_AVG_LSH	11 //3
 #define VCOM_AVG_WID	2
 /* INT_ENABLE1 */
 #define TSD_EN_LSH        6
