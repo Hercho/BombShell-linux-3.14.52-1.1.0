@@ -70,7 +70,7 @@ int tps6518x_reg_read(int reg_num, unsigned int *reg_val)
 	if (result < 0) {
 		dev_err(&tps6518x_client->dev,
 			"Unable to read tps6518x register via I2C\n");
-		printk(" Error read, Address=%u  registro=%u\n",&tps6518x_client->addr,reg_num);
+		printk("tps6518x_  Error read, Address=%u  registro=%u\n",&tps6518x_client->addr,reg_num);
 		return PMIC_ERROR;
 	}
 	
@@ -249,7 +249,7 @@ static int tps6518x_detect(struct i2c_client *client,
 	if (info) {
 		strlcpy(info->type, "tps6518x_sensor", I2C_NAME_SIZE);
 	}
-    printk("tps6518x_detect success\n");
+    printk("tps6518x_ Detect success! revId==0x%02X \n", revId);
 
 	return 0;
 }

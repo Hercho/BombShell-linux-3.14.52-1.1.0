@@ -92,6 +92,7 @@ static ssize_t show_temp_input(struct device *dev,
 	 * begin Temperature conversion
 	 */
 	tps6518x_reg_read(REG_TPS6518x_REVID,&reg_val);
+	printk("tps6518x_ show_temp_imput() reg_ID=%d \n",reg_val);	
 	switch (reg_val & 0xff)
 	{
 	   case TPS65180_PASS1 :
@@ -106,6 +107,7 @@ static ssize_t show_temp_input(struct device *dev,
 		        msleep(1);
 		        tps6518x_reg_read(REG_TPS65180_TMST_CONFIG, &reg_val);
 		    }
+			printk("tps6518x_ Show_temp_imput Function CASE:TPS65181_ value=%d\n",reg_val);				
 	        break;
 	   case TPS65185_PASS0 :
 	   case TPS65186_PASS0 :
@@ -121,6 +123,7 @@ static ssize_t show_temp_input(struct device *dev,
 		        msleep(1);
 		        tps6518x_reg_read(REG_TPS65185_TMST1, &reg_val);
 		    }
+			printk("tps6518x_ Show_temp_imput Function CASE:TPS65185_ value=%d\n",reg_val);
 	        break;
 	   default:
 		break;	
@@ -140,6 +143,7 @@ static ssize_t show_intr_regs(struct device *dev,
 	 * get the interrupt status register value
 	 */
 	tps6518x_reg_read(REG_TPS6518x_REVID,&reg_val);
+	printk("tps6518x_ show_intr_regs() reg_ID=%d \n",reg_val);	
 	switch (reg_val & 0xff)
 	{
 	   case TPS65180_PASS1 :
@@ -149,6 +153,7 @@ static ssize_t show_intr_regs(struct device *dev,
 		    tps6518x_reg_read(REG_TPS65180_INT1, &intr_reg_val);
 		    tps6518x_reg_read(REG_TPS65180_INT2, &reg_val);
 		    intr_reg_val |= reg_val<<8;
+			printk("tps6518x_ show_int_regs() CASE:TPS65181_PASS2  value_INT2=%d \n",intr_reg_val);			
 	        break;
 	   case TPS65185_PASS0 :
 	   case TPS65186_PASS0 :
@@ -159,6 +164,7 @@ static ssize_t show_intr_regs(struct device *dev,
 		    tps6518x_reg_read(REG_TPS65185_INT1, &intr_reg_val);
 		    tps6518x_reg_read(REG_TPS65185_INT2, &reg_val);
 		    intr_reg_val |= reg_val<<8;
+			printk("tps6518x_ show_int_regs() CASE:TPS65186_PASS2  value_INT2=%d \n",intr_reg_val);
 	        break;
 	   default:
 		break;	
@@ -177,6 +183,7 @@ static ssize_t show_vcom(struct device *dev,
 	 * get the vcom registers
 	 */
 	tps6518x_reg_read(REG_TPS6518x_REVID,&reg_val);
+	printk("tps6518x_ show_vcom() reg_ID=%d \n",reg_val);
 	switch (reg_val & 0xff)
 	{
 	   case TPS65180_PASS1 :
@@ -184,6 +191,7 @@ static ssize_t show_vcom(struct device *dev,
 	   case TPS65181_PASS1 :
 	   case TPS65181_PASS2 :
 		    tps6518x_reg_read(REG_TPS65180_VCOM_ADJUST, &vcom_reg_val);
+			printk("tps6518x_ show_vcom() CASE:TPS65181_PASS2  value=%d \n",vcom_reg_val);
 	        break;
 	   case TPS65185_PASS0 :
 	   case TPS65186_PASS0 :
@@ -194,6 +202,7 @@ static ssize_t show_vcom(struct device *dev,
 		    tps6518x_reg_read(REG_TPS65185_VCOM1, &vcom_reg_val);
 		    tps6518x_reg_read(REG_TPS65185_VCOM2, &reg_val);
 		    vcom_reg_val |= reg_val<<8;
+			printk("tps6518x_ show_vcom() CASE:TPS65186_PASS2  value=%d \n",vcom_reg_val);
 	        break;
 	   default:
 		break;	
@@ -212,6 +221,7 @@ static ssize_t set_vcom(struct device *dev,
 	 * get the interrupt status register value
 	 */
 	tps6518x_reg_read(REG_TPS6518x_REVID,&reg_val);
+	printk("tps6518x_ set_vcom() reg_ID=%d \n",reg_val);
 	switch (reg_val & 0xff)
 	{
 	   case TPS65180_PASS1 :
@@ -219,6 +229,7 @@ static ssize_t set_vcom(struct device *dev,
 	   case TPS65181_PASS1 :
 	   case TPS65181_PASS2 :
 		    tps6518x_reg_write(REG_TPS65180_VCOM_ADJUST, vcom_reg_val&0xff);
+			printk("tps6518x_ set_vcom() CASE:TPS65181_PASS2 set_value=%d \n",(vcom_reg_val&0xff));
 	        break;
 	   case TPS65185_PASS0 :
 	   case TPS65186_PASS0 :
@@ -228,6 +239,7 @@ static ssize_t set_vcom(struct device *dev,
 	   case TPS65186_PASS2 :
 		    tps6518x_reg_write(REG_TPS65185_VCOM1, vcom_reg_val&0xff);
 		    tps6518x_reg_write(REG_TPS65185_VCOM2, (vcom_reg_val>>8)&0xff);
+			printk("tps6518x_ set_vcom() CASE:TPS65186_PASS2 set_valueVCOM2=%d \n",((vcom_reg_val>>8)&0xff));	
 	        break;
 	   default:
 		break;	
@@ -295,7 +307,7 @@ exit:
 static int tps6518x_sensor_remove(struct platform_device *pdev)
 {
 	struct tps6518x_data *data = platform_get_drvdata(pdev);
-
+	printk("tps6518x_ sensor_remove() \n");
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&pdev->dev.kobj, &tps6518x_group);
 
