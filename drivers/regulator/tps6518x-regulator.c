@@ -337,7 +337,7 @@ static int tps6518x_vcom_disable(struct regulator_dev *reg)
 {
 	struct tps6518x *tps6518x = rdev_get_drvdata(reg);
 	
-	printk("tps6518x_ Disable VCOM line332- \n");
+	printk("tps6518x_ Disable VCOM \n");
 	gpio_set_value(tps6518x->gpio_pmic_vcom_ctrl,0);
 	return 0;
 }
@@ -353,24 +353,18 @@ static int tps6518x_vcom_is_enabled(struct regulator_dev *reg)
 		return 1;
 }
 
-
 static int tps6518x_is_power_good(struct tps6518x *tps6518x)
 {
 	/*
 	 * XOR of polarity (starting value) and current
 	 * value yields whether power is good.
 	 */
-	printk("tps6518x_ Check pmic_pwrgood GPIO oripolarity=%d, pmic_pwrgood=%d \n",
-tps6518x->pwrgood_polarity,tps6518x->gpio_pmic_pwrgood);
-
-	tps6518x->pwrgood_polarity=1;
-
-	printk("tps6518x_ salida Xor return %d",(gpio_get_value(tps6518x->gpio_pmic_pwrgood) ^
+	printk("tps6518x_ Check pmic_pwrgood GPIO ori_polarity=%d, pmic_pwrgood=%d Return=%d \n",
+		tps6518x->pwrgood_polarity,tps6518x->gpio_pmic_pwrgood,(gpio_get_value(tps6518x->gpio_pmic_pwrgood) ^
 		tps6518x->pwrgood_polarity));
-	
+
 	return gpio_get_value(tps6518x->gpio_pmic_pwrgood) ^
 		tps6518x->pwrgood_polarity; //set 1 Xor 1-1=0 fails y 0-1=1 in regulation mode
-
 }
 
 static int tps6518x_wait_power_good(struct tps6518x *tps6518x)
@@ -423,12 +417,12 @@ write_ti(0x01,0xBF);
 
 		/* enable display regulators */
 		cur_reg_val = tps65180_current_Enable_Register & 0x3f;//0x3f;
-		fld_mask =  BITFMASK(VCOM_EN) | BITFMASK(VDDH_EN) | // BITFMASK(ACTIVE) | BITFMASK(V3P3_SW_EN) |  
-			BITFMASK(VPOS_EN) | BITFMASK(VEE_EN) | BITFMASK(VNEG_EN); 	// add VCOM_EN,V3P3_EN mask
-		fld_val =  BITFVAL(VCOM_EN, true) | //BITFVAL(ACTIVE, true) | BITFVAL(V3P3_SW_EN, true) |
-			BITFVAL(VDDH_EN, true) | BITFVAL(VPOS_EN, true) | BITFVAL(VEE_EN, true) | BITFVAL(VNEG_EN, true);	// add V3P3_EN, set 1 baja 00011111
+		fld_mask = BITFMASK(VCOM_EN) | BITFMASK(VDDH_EN) | // BITFMASK(ACTIVE) | BITFMASK(V3P3_SW_EN) |    
+			BITFMASK(VPOS_EN) | BITFMASK(VEE_EN) | BITFMASK(VNEG_EN); 		// add VCOM_EN,V3P3_EN mask
+		fld_val =  BITFVAL(VCOM_EN, true) | 	//BITFVAL(ACTIVE, true) |  BITFVAL(V3P3_SW_EN, true) |
+			BITFVAL(VDDH_EN, true) | BITFVAL(VPOS_EN, true) | BITFVAL(VEE_EN, true) | BITFVAL(VNEG_EN, true);	// add V3P3_EN, set 1 baja 00111111
 		new_reg_val = tps65180_current_Enable_Register = to_reg_val(cur_reg_val, fld_mask, fld_val);
-		tps6518x_reg_write(REG_TPS65185_ENABLE, new_reg_val); 	// baja 10111111 - 00111111
+		tps6518x_reg_write(REG_TPS65185_ENABLE, new_reg_val); 	// baja 00111111
 		
 		msleep(1);
 		printk("tps6518x_ primer write registro reg=%u - valor=%u \n\n",REG_TPS65185_ENABLE,new_reg_val,new_reg_val);
@@ -440,14 +434,14 @@ write_ti(0x01,0xBF);
 
 		/* turn on display regulators */
 		cur_reg_val = tps65180_current_Enable_Register & 0x3f;// 0xBF;//0x3f and logica contra 00111111=0x3f 
-		fld_mask = BITFMASK(ACTIVE); //| BITFMASK(STANDBY);  | BITFMASK(V3P3_SW_EN);// add standby mask, no needed
-		fld_val = BITFVAL(ACTIVE, true); // | BITFVAL(V3P3_SW_EN, true); | BITFVAL(STANDBY, true); // add standby bit, no needed
+		fld_mask = BITFMASK(ACTIVE); 	//| BITFMASK(STANDBY);  | BITFMASK(V3P3_SW_EN);//add standby mask, no needed
+		fld_val = BITFVAL(ACTIVE, true); 	// | BITFVAL(V3P3_SW_EN, true); | BITFVAL(STANDBY, true);
 		new_reg_val = tps65180_current_Enable_Register = to_reg_val(cur_reg_val, fld_mask, fld_val); 
-		tps6518x_reg_write(REG_TPS65185_ENABLE, new_reg_val); 	// set AcTIVE and STANBY to "1"- baja 10011111
+		tps6518x_reg_write(REG_TPS65185_ENABLE, new_reg_val); 	// set AcTIVE to "1"- baja 10011111
+		
 		printk("tps6518x_ segundo write registro reg=%u valor=%u \n\n",REG_TPS65185_ENABLE,new_reg_val);
-		 
 		//tps6518x_reg_write(1,191); //reg 0x01, val 0xbf - 10111111
-		gpio_set_value(tps6518x->gpio_pmic_powerup,1); //add
+		//gpio_set_value(tps6518x->gpio_pmic_powerup,1); //add
 	}
 
 	msleep(1);
@@ -481,7 +475,7 @@ static int tps6518x_display_disable(struct regulator_dev *reg)
 		fld_val = BITFVAL(VCOM_EN, true) | BITFVAL(STANDBY, true);
 		new_reg_val = tps65180_current_Enable_Register = to_reg_val(cur_reg_val, fld_mask, fld_val);
 		tps6518x_reg_write(REG_TPS65180_ENABLE, new_reg_val);
-		gpio_set_value(tps6518x->gpio_pmic_powerup,0);	//add
+		//gpio_set_value(tps6518x->gpio_pmic_powerup,0);	//add
 		printk("tps6518x_ disable, EPDC DIsplay dir=%u val= %u  line443\n",REG_TPS65180_ENABLE, new_reg_val);
 	}
 
@@ -841,21 +835,21 @@ module_exit(tps6518x_regulator_exit);
 /*
  * Parse user specified options (`tps6518x:')
  * example:
- *   tps6518x:pass=2,vcom=-1250000
+ *   tps6518x:pass=2,vcom=-1250000 (uV) -1.25V
  */
 static int __init tps6518x_setup(char *options)
 {
 	int ret;
 	char *opt;
 	unsigned long ulResult;
-	printk("tps6518x_ _init tps65185 Options= %s \n",options);	
+	printk("tps6518x_ _init tps65185 Options= %s \n",options);//tps6518x_ _init tps65185 Options= pass=5,vcom=-1250000 	
 	while ((opt = strsep(&options, ",")) != NULL) {
 		if (!*opt)
 			continue;
 		if (!strncmp(opt, "pass=", 5)) {
 			ret = strict_strtoul((const char *)(opt + 5), 0, &ulResult);
 			tps6518x_pass_num = ulResult;
-			printk("tps6518x_ tps6518x_pass_num=%u \n",tps6518x_pass_num);
+			printk("tps6518x_ tps6518x_pass_num=%u \n",tps6518x_pass_num);//tps6518x_ tps6518x_pass_num=5 
 			if (ret < 0)
 				return ret;
 		}
@@ -868,7 +862,7 @@ static int __init tps6518x_setup(char *options)
 			if (ret < 0)
 				return ret;
 			tps6518x_vcom = -tps6518x_vcom;
-			printk("tps6518x_ tps6518x_vcom= %u\n",tps6518x_vcom);
+			printk("tps6518x_ tps6518x_vcom= %u \n",tps6518x_vcom);//tps6518x_ tps6518x_vcom= 4293717296
 		}
 	}
 
@@ -882,7 +876,7 @@ static int __init tps65182_setup(char *options)
 	int ret;
 	char *opt;
 	unsigned long ulResult;
-	printk("tps6518x_ _init tps65182 Options= %s ",options);
+	printk("tps6518x_ _init tps65182 Options= %s ",options); 
 	while ((opt = strsep(&options, ",")) != NULL) {
 		if (!*opt)
 			continue;

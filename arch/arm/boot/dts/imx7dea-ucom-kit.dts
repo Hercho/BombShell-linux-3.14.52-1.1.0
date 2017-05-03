@@ -570,22 +570,21 @@
 		/*
 		 * Default power sequencing for TPS65185/65186, support E-Ink panel
 		 */
-		upseq0 = <0xe4>;	/*VNEG_UP - VEE_UP - VPOS_UP - VDDH_UP*/
+		upseq0 = <0xe4>;	/* VNEG_UP - VEE_UP - VPOS_UP - VDDH_UP */
 		upseq1 = <0x55>;	/* 6ms + 6ms + 6ms + 6ms */
-		dwnseq0 = <0x1e>;
+		dwnseq0 = <0x1e>;	/* VDDH_UP - VPOS_UP - VEE_UP - VNEG_UP  */
 		dwnseq1 = <0xe0>;	/* 48ms + 24ms + 6 ms + 3ms */
 				
-		gpio_pmic_pwrgood = <&gpio2 31 0>;	//las mismas variables se llaman desde el device driver
-		gpio_pmic_vcom_ctrl = <&gpio1 14 0>;    //<&gpio7 0 0>; //=192	  	
-		gpio_pmic_wakeup = <&gpio1 3 0>;  //<&gpio7 13 0>; // (6*32)+13=205   	
-		gpio_pmic_intr = <&gpio7 12 0>;   	// =204 
-		gpio_pmic_powerup = <&gpio1 4 0>; //<&gpio7 14 0>; // (6*32)+14=206 	led  
+		gpio_pmic_pwrgood = <&gpio2 31 0>;	// 63 - las mismas variables se llaman desde el device driver
+		gpio_pmic_vcom_ctrl = <&gpio7 0 0>; //(6*32)+0=192	  	
+		gpio_pmic_wakeup = <&gpio7 13 0>; 	//(6*32)+13=205   	
+		gpio_pmic_intr = <&gpio7 12 0>;   	//(6*32)+12=204 
+		gpio_pmic_powerup = <&gpio7 14 0>; 	//(6*32)+14=206 	  
 
 		regulators {
 			DISPLAY_reg: DISPLAY {
 				regulator-name = "DISPLAY";
 			};
-
 
 			VCOM_reg: VCOM {
 				regulator-name = "VCOM";
@@ -660,7 +659,7 @@
                         >;
                 };
 
-		/* interrup touch elan BombShellV2 */
+			/* interrup touch elan BombShellV2 */
 		pinctrl_epdc_elan_touch: epdc_elan_touch_grp {
 			fsl,pins = <
 				MX7D_PAD_ENET1_RGMII_TD1__GPIO7_IO7	0x80000000	
@@ -669,11 +668,11 @@
 
 		pinctrl_tps6518x: tps6518xgrp-1 {
 			fsl,pins = <		
-				MX7D_PAD_GPIO1_IO03__GPIO1_IO3	0x80000000//esteMX7D_PAD_ENET1_RX_CLK__GPIO7_IO13--MX7D_PAD_EPDC_SDCE3__GPIO2_IO23		0x80000000  /* wakeup */
-				MX7D_PAD_GPIO1_IO14__GPIO1_IO14	0x80000000//esteMX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0--MX7D_PAD_I2C4_SCL__GPIO4_IO14		0x80000000  /* vcom_ctrl */
-				MX7D_PAD_ENET1_TX_CLK__GPIO7_IO12	0x80000000 //MX7D_PAD_ENET1_TX_CLK__EPDC_PWR_IRQ // MX7D_PAD_EPDC_SDCE2__GPIO2_IO22		0x80000000  /* pwr int */
-				MX7D_PAD_EPDC_PWR_STAT__GPIO2_IO31	0x80000000  ///* pwrgood */  Ok Idem 
-				MX7D_PAD_GPIO1_IO04__GPIO1_IO4		0x80000000 //esteMX7D_PAD_ENET1_CRS__GPIO7_IO14--MX7D_PAD_EPDC_PWR_COM__GPIO2_IO30	0x80000000  /* pwr-up-v3p3 */
+				MX7D_PAD_ENET1_RX_CLK__GPIO7_IO13	0x80000000//--MX7D_PAD_EPDC_SDCE3__GPIO2_IO23 /* wakeup */
+				MX7D_PAD_ENET1_RGMII_RD0__GPIO7_IO0 0x80000000//--MX7D_PAD_I2C4_SCL__GPIO4_IO14  /* vcom_ctrl */
+				MX7D_PAD_ENET1_TX_CLK__GPIO7_IO12	0x80000000// MX7D_PAD_EPDC_SDCE2__GPIO2_IO22 /* pwr int */
+				MX7D_PAD_EPDC_PWR_STAT__GPIO2_IO31	0x80000000/* pwrgood */  //Ok Idem 
+				MX7D_PAD_ENET1_CRS__GPIO7_IO14		0x80000000//MX7D_PAD_EPDC_PWR_COM__GPIO2_IO30 /* pwr-up-v3p3 */
 			>;
 		};
 /*
