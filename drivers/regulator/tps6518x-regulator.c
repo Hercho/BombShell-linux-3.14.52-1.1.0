@@ -359,6 +359,7 @@ static int tps6518x_is_power_good(struct tps6518x *tps6518x)
 	 * XOR of polarity (starting value) and current
 	 * value yields whether power is good.
 	 */
+	
 	printk("tps6518x_ Check pmic_pwrgood GPIO ori_polarity=%d, pmic_pwrgood=%d Return=%d \n",
 		tps6518x->pwrgood_polarity,tps6518x->gpio_pmic_pwrgood,(gpio_get_value(tps6518x->gpio_pmic_pwrgood) ^
 		tps6518x->pwrgood_polarity));

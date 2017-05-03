@@ -173,7 +173,7 @@ static int tps6518x_probe(struct i2c_client *client,
 
 	}
 	tps6518x->pdata = pdata;
-
+	tps6518x->pwrgood_polarity=1;
 	dev_info(&client->dev, "PMIC TPS6518x for eInk display\n");
 
 	printk("tps6518x_probe success\n");
